@@ -51,7 +51,7 @@ int main(int argc, char **argv)
 
 	printf("Please enter the student's last name: ");
 	std::cin >> input_line;
-	student.l_name = (char*) malloc(sizeof(input_line));
+	student.l_name = (char*) malloc(sizeof(strlen(input_line) + 1));
 	strcpy(student.l_name,input_line);
 	
 	while(1)	//assignment count input
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
 		}
 	}
 
-	int* grades = (int*) malloc(student.n_assignments * sizeof(int));
+	student.grades = (double*) malloc(student.n_assignments * sizeof(double));
 
 	for(int i = 0;i < student.n_assignments;i++)
 	{	
@@ -89,9 +89,9 @@ int main(int argc, char **argv)
 
 			try
 			{
-				grades[i] = std::stoi(input_line);
+				student.grades[i] = strtod(input_line,NULL);
 				
-				if(grades[i] < 0)
+				if(student.grades[i] < 0.0)
 				{
 					throw std::invalid_argument("Negative number");
 				}
@@ -105,17 +105,33 @@ int main(int argc, char **argv)
 		}
 
 	}
-//	printf("ID= %d\n",student.id);
-//	printf("Name= %s %s\n",student.f_name,student.l_name);
-//	printf("Assignments: %d\n",student.n_assignments);
+
+/*
+	printf("ID= %d\n",student.id);
+	printf("Name= %s %s\n",student.f_name,student.l_name);
+	printf("Assignments: %d\n",student.n_assignments);
+	for(int i = 0;i < student.n_assignments;i++)
+		printf("Assignment %d: %f\n",i,student.grades[i]);
+*/
 
 	calculateStudentAverage(&student,&average);
+
+//	printf("average= %f\n",average);
 // Output `average`
+	printf("Student: %s %s [%d]\n",student.f_name,student.l_name,student.id);
+	printf("\tAverage grade: %f",average);
 
     return 0;
 }
 
 void calculateStudentAverage(void *object, double *avg)
 {
-    // Code to calculate and store average grade
+//sum grades
+	Student* student = (Student*) object;
+	double	sum = 0;
+
+	for(int i = 0;i < student->n_assignments;i++)
+		sum += student->grades[i];
+
+	*avg = sum / (double) student->n_assignments;
 }
