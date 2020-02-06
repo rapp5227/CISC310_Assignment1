@@ -20,11 +20,24 @@ int main(int argc, char **argv)
 	
 // Sequence of user input -> store in fields of `student`
 	printf("Please enter the student's id number: ");
-	
+	input_line = (char*) malloc(10 * sizeof(char));
 	std::cin >> input_line;
-	
-	std::cout << input_line << "\n";
-	//reader
+	//TODO insert error check and store
+
+	printf("%s\n",input_line);	//test id #
+
+	printf("Please enter the student's first name: ");
+	input_line = (char*) realloc(input_line,129 * sizeof(char));
+	std::cin >> input_line;
+	//TODO insert error check and store
+
+	printf("%s\n",input_line);	//test first name
+
+	printf("Please enter the student's last name: ");
+	std::cin >> input_line;
+	//TODO insert error check and store
+
+	printf("%s\n",input_line);	//test last name
 // Call `CalculateStudentAverage(???, ???)`
 // Output `average`
 
