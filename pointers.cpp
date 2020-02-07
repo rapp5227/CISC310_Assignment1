@@ -119,6 +119,23 @@ int main(int argc, char **argv)
 	char* avstring = (char*) malloc(11 * sizeof(char));	//score must be less than 1000, has up to 6 decimals
 	sprintf(avstring,"%f",average);
 
+	int loc = -1;
+	for(int i = 0;i < strlen(avstring);i++)
+	{
+		if(avstring[i] == '0')
+			loc = i;
+
+		if(loc >= 0 && avstring[i] != '0')
+			loc = -1;
+	}
+
+	if(loc >= 0)	//TODO this solution is untested
+	{
+		avstring[loc] = '\00';
+
+		avstring = (char*) realloc(avstring,((int)strlen(avstring)) + 1);
+	}
+
 //TODO avstring is initalized correctly, need to trim the zeroes
 
 // Output `average`
