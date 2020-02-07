@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>
+#include <string>
 
 typedef struct Student {
     int id;
@@ -20,27 +21,26 @@ int main(int argc, char **argv)
 	char*	input_line = (char*) malloc(10 * sizeof(char));;
 	
 // Sequence of user input -> store in fields of `student`
-	while(1)	//student id input
+	for(int loop_flag = 1; loop_flag == 1;)	//student id input
 	{
+		loop_flag = 0;	//assume loop will succeed, unless later statements undo this
+
 		printf("Please enter the student's id number: ");
 		std::cin >> input_line;
 
-		try
+		for(int i = 0; input_line[i] != '\x00';i++)
 		{
-			student.id = std::stoi(input_line);
-
-			if(student.id < 0)
+			if(!isdigit(input_line[i]))	//catches non-digit chars, ~including negative signs~
 			{
-				throw std::invalid_argument("Negative number");
-			}
+				printf("Sorry, I cannot understand your answer\n");
+				loop_flag = 1;	//loop will reiterate
 
-			break;
-		}
-		catch(std::invalid_argument)
-		{
-			printf("Sorry, I cannot understand your answer\n");
+				break;	//breaks inner loop
+			}
 		}
 	}
+
+	student.id = std::stoi(input_line);
 
 	input_line = (char*) realloc(input_line,129 * sizeof(char));
 
@@ -53,31 +53,39 @@ int main(int argc, char **argv)
 	std::cin >> input_line;
 	student.l_name = (char*) malloc(sizeof(strlen(input_line) + 1));
 	strcpy(student.l_name,input_line);
-	
-	while(1)	//assignment count input
-	{
-		printf("Please enter how many assignments were graded: ");
 
+	for(int loop_flag = 1; loop_flag == 1;)	//assignment count input
+	{
+		loop_flag = 0;	//assume loop will succeed, unless later statements undo this
+
+		printf("Please enter how many assignments were graded: ");
 		std::cin >> input_line;
 
-		try
+		for(int i = 0; input_line[i] != '\x00';i++)
+		{
+			if(!isdigit(input_line[i]))	//catches non-digit chars, ~including negative signs~
+			{
+				printf("Sorry, I cannot understand your answer\n");
+				loop_flag = 1;	//loop will reiterate
+
+				break;	//breaks inner loop
+			}
+		}
+
+		if(!loop_flag)
 		{
 			student.n_assignments = std::stoi(input_line);
-			
-			if(student.n_assignments <= 0)
-			{
-				throw std::invalid_argument("Negative number");
-			}
 
-			break;
-		}
-		catch(std::invalid_argument)
-		{
-			printf("Sorry, I cannot understand your answer\n");
+			if(student.n_assignments < 1)	//zeroes pass earlier check
+			{
+				printf("Sorry, I cannot understand your answer\n");
+				++loop_flag;
+			}
 		}
 	}
 
 	student.grades = (double*) malloc(student.n_assignments * sizeof(double));
+	printf("\n");
 
 	for(int i = 0;i < student.n_assignments;i++)
 	{	
@@ -103,23 +111,19 @@ int main(int argc, char **argv)
 				printf("Sorry, I cannot understand your answer\n");
 			}
 		}
-
 	}
-
-/*
-	printf("ID= %d\n",student.id);
-	printf("Name= %s %s\n",student.f_name,student.l_name);
-	printf("Assignments: %d\n",student.n_assignments);
-	for(int i = 0;i < student.n_assignments;i++)
-		printf("Assignment %d: %f\n",i,student.grades[i]);
-*/
 
 	calculateStudentAverage(&student,&average);
 
-//	printf("average= %f\n",average);
+//trim trailing zeroes from average
+	char* avstring = (char*) malloc(11 * sizeof(char));
+	sprintf(avstring,"%f",average);
+
+//TODO avstring is initalized correctly, need to trim the zeroes
+
 // Output `average`
-	printf("Student: %s %s [%d]\n",student.f_name,student.l_name,student.id);
-	printf("\tAverage grade: %f",average);
+	printf("\nStudent: %s %s [%d]\n",student.f_name,student.l_name,student.id);
+	printf("  Average grade: %s",avstring);
 
     return 0;
 }
