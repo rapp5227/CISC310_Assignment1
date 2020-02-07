@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 	calculateStudentAverage(&student,&average);
 
 //trim trailing zeroes from average
-	char* avstring = (char*) malloc(11 * sizeof(char));
+	char* avstring = (char*) malloc(11 * sizeof(char));	//score must be less than 1000, has up to 6 decimals
 	sprintf(avstring,"%f",average);
 
 //TODO avstring is initalized correctly, need to trim the zeroes
@@ -124,6 +124,9 @@ int main(int argc, char **argv)
 // Output `average`
 	printf("\nStudent: %s %s [%d]\n",student.f_name,student.l_name,student.id);
 	printf("  Average grade: %s",avstring);
+
+	free(input_line);
+	free(student.grades);
 
     return 0;
 }
