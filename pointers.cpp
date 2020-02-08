@@ -1,8 +1,8 @@
-// compile: g++ -std=c++11 -o pointers pointers.cpp
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>
 #include <string>
+#include <cmath>
 
 typedef struct Student {
     int id;
@@ -97,15 +97,30 @@ int main(int argc, char **argv)
 
 			try
 			{
-				student.grades[i] = strtod(input_line,NULL);
-				
-				if(student.grades[i] < 0.0)
+				int decimal_counter = 0;
+
+				for(int i = 0; input_line[i] != '\x00';i++)
 				{
-					throw std::invalid_argument("Negative number");
+
+					if(!isdigit(input_line[i]))	//catches non-digit chars, ~including negative signs~
+					{
+						if(input_line[i] == '.')	//non-digit is a decimal point
+						{
+							if(decimal_counter++ > 0)	//if there's more than one decimal point
+								throw std::invalid_argument("Too many decimal points");
+						}
+
+						else	//non-digit isn't a decimal point
+							throw std::invalid_argument("Illegal character");
+					}
+
 				}
 
-				break;
-			}
+				student.grades[i] = strtod(input_line,NULL);
+
+				break;	//breaks infinite while loop
+			}//try
+
 			catch(std::invalid_argument)
 			{
 				printf("Sorry, I cannot understand your answer\n");
@@ -115,38 +130,28 @@ int main(int argc, char **argv)
 
 	calculateStudentAverage(&student,&average);
 
-//trim trailing zeroes from average
-	char* avstring = (char*) malloc(11 * sizeof(char));	//score must be less than 1000, has up to 6 decimals
-	sprintf(avstring,"%f",average);
+//round to the nearest tenth, convert to string
 
-	int loc = -1;
-	for(int i = 0;i < strlen(avstring);i++)
-	{
-		if(avstring[i] == '0')
-			loc = i;
+	average *= 10.0;
+	average = round(average);
+	average /= 10.0;
 
-		if(loc >= 0 && avstring[i] != '0')
-			loc = -1;
-	}
+	std::string avstring = std::to_string(average);
 
-	if(loc >= 0)	//TODO this solution is untested
-	{
-		avstring[loc] = '\00';
-
-		avstring = (char*) realloc(avstring,((int)strlen(avstring)) + 1);
-	}
-
-//TODO avstring is initalized correctly, need to trim the zeroes
+	avstring = avstring.substr(0,avstring.find(".") + 2);
 
 // Output `average`
 	printf("\nStudent: %s %s [%d]\n",student.f_name,student.l_name,student.id);
-	printf("  Average grade: %s",avstring);
+	std::cout << "  Average grade: " << avstring << std::endl;
 
+//free malloced memory
 	free(input_line);
+	free(student.f_name);
+	free(student.l_name);
 	free(student.grades);
 
     return 0;
-}
+}//main
 
 void calculateStudentAverage(void *object, double *avg)
 {
@@ -158,4 +163,4 @@ void calculateStudentAverage(void *object, double *avg)
 		sum += student->grades[i];
 
 	*avg = sum / (double) student->n_assignments;
-}
+}//calculateStudentAverage
