@@ -21,9 +21,9 @@ int main(int argc, char **argv)
     char*   input_line = (char*) malloc(10 * sizeof(char));;
     
 // Sequence of user input -> store in fields of `student`
-    for(int loop_flag = 1; loop_flag == 1;) //student id input
+    for(int flag = 1;flag;) //student id input
     {
-        loop_flag = 0;  //assume loop will succeed, unless later statements undo this
+        flag = 0;  //assume loop will succeed, unless later statements undo this
 
         printf("Please enter the student's id number: ");
         std::cin >> input_line;
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
             if(!isdigit(input_line[i])) //catches non-digit chars, ~including negative signs~
             {
                 printf("Sorry, I cannot understand your answer\n");
-                loop_flag = 1;  //loop will reiterate
+                flag = 1;  //loop will reiterate
 
                 break;  //breaks inner loop
             }
@@ -44,19 +44,43 @@ int main(int argc, char **argv)
 
     input_line = (char*) realloc(input_line,129 * sizeof(char));
 
-    printf("Please enter the student's first name: ");
-    std::cin >> input_line;
+    for(int flag = 1;flag;)
+    {
+        flag = 0;
+
+        printf("Please enter the student's first name: ");
+        std::cin >> input_line;
+
+        for(int i = 0;input_line[i] != '\x00';i++)
+            if(!isalpha(input_line[i]))
+            {
+                printf("Sorry, I cannot understand your answer\n");
+                flag = 1;
+            }
+    }
     student.f_name = (char*) malloc(sizeof(input_line));
     strcpy(student.f_name,input_line);
 
-    printf("Please enter the student's last name: ");
-    std::cin >> input_line;
+    for(int flag = 1;flag;)
+    {
+        flag = 0;
+
+        printf("Please enter the student's last name: ");
+        std::cin >> input_line;
+
+        for(int i = 0;input_line[i] != '\x00';i++)
+            if(!isalpha(input_line[i]))
+            {
+                printf("Sorry, I cannot understand your answer\n");
+                ++flag;
+            }
+    }
     student.l_name = (char*) malloc(sizeof(strlen(input_line) + 1));
     strcpy(student.l_name,input_line);
 
-    for(int loop_flag = 1; loop_flag == 1;) //assignment count input
+    for(int flag = 1;flag;) //assignment count input
     {
-        loop_flag = 0;  //assume loop will succeed, unless later statements undo this
+        flag = 0;  //assume loop will succeed, unless later statements undo this
 
         printf("Please enter how many assignments were graded: ");
         std::cin >> input_line;
@@ -66,20 +90,20 @@ int main(int argc, char **argv)
             if(!isdigit(input_line[i])) //catches non-digit chars, ~including negative signs~
             {
                 printf("Sorry, I cannot understand your answer\n");
-                loop_flag = 1;  //loop will reiterate
+                ++flag;  //loop will reiterate
 
                 break;  //breaks inner loop
             }
         }
 
-        if(!loop_flag)
+        if(!flag)
         {
             student.n_assignments = std::stoi(input_line);
 
             if(student.n_assignments < 1)   //zeroes pass earlier check
             {
                 printf("Sorry, I cannot understand your answer\n");
-                ++loop_flag;
+                ++flag;
             }
         }
     }
