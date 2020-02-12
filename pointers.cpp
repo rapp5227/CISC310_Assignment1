@@ -52,7 +52,7 @@ int main(int argc, char **argv)
         std::cin >> input_line;
 
         for(int i = 0;input_line[i] != '\x00';i++)
-            if(!isalpha(input_line[i]))
+            if(!isalpha(input_line[i]) && input_line[i] != '-')
             {
                 printf("Sorry, I cannot understand your answer\n");
                 flag = 1;
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
         std::cin >> input_line;
 
         for(int i = 0;input_line[i] != '\x00';i++)
-            if(!isalpha(input_line[i]))
+            if(!isalpha(input_line[i]) && input_line[i] != '-')
             {
                 printf("Sorry, I cannot understand your answer\n");
                 ++flag;
